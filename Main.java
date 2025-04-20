@@ -6,12 +6,14 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class Main{
@@ -22,12 +24,13 @@ Actions a;
 	public void launchApp() {
 		c=new ChromeOptions();
 		c.addArguments("--incognito");
+		
 		d= new ChromeDriver(c);
 		a= new Actions(d);
 		d.get("https://www.myntra.com/");
 		d.manage().window().maximize();
 	}
-	@Test(priority=1)
+	@Test(priority=1) //logo validation
 	public void logo() {
 		boolean flag=d.findElement(By.xpath("//a[@class='myntraweb-sprite desktop-logo sprites-headerLogo ']")).isDisplayed();
 		Assert.assertTrue(flag);
@@ -50,6 +53,24 @@ Actions a;
 		String s3=d.findElement(By.xpath("//span[@class='pdp-price']")).getText();
 		System.out.println("Selected product is "+s1+" "+s2+" and priced "+s3);
 		}
+	@DataProvider(name="loginData")
+	public Object[] data() {
+		return new Object[] {"2342","3432","345666","34422"};
+	}
+	
+	@Test(priority=3,dataProvider="loginData")
+	public void login(String phno) throws InterruptedException {
+		WebElement w =d.findElement(By.xpath("//div[@class='desktop-userIconsContainer']"));
+		WebElement w1=d.findElement(By.xpath("//a[normalize-space()='login / Signup']"));
+		a.moveToElement(w).click(w1).perform();
+		d.findElement(By.xpath("//input[@autocomplete='new-password']")).sendKeys(phno);
+		d.findElement(By.xpath("//div[text()='CONTINUE']")).click();
+		String w3=d.findElement(By.xpath("//div[@class='errorContainer']")).getText();
+		Assert.assertEquals("Please enter a valid mobile number (10 digits)",w3);
+		
+		
+		
+	}
 	
 	@AfterMethod
 	public void closeApp() {
