@@ -1,15 +1,19 @@
 package js;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -20,6 +24,8 @@ public class Main{
 WebDriver d;
 ChromeOptions c;
 Actions a;
+WebDriverWait wa;
+JavascriptExecutor js;
 	@BeforeMethod
 	public void launchApp() {
 		c=new ChromeOptions();
@@ -71,10 +77,36 @@ Actions a;
 		
 		
 	}
+	@DataProvider(name="dp")
+	public Object[] getData2() {
+		return new Object[] {"Puma","nike","Woodland"};
+	}
+	
+	@Test(priority=4,dataProvider="dp")
+	public void studioTest(String data)throws Exception {
+		wa=new WebDriverWait(d,Duration.ofSeconds(30));
+		WebElement w5=d.findElement(By.xpath("//a[normalize-space()='Studio']"));
+		wa.until(ExpectedConditions.visibilityOf(w5)).click();
+		Thread.sleep(10000);
+		WebElement w6=d.findElement(By.xpath("//img[@class='img-responsive preLoad loaded']"));
+		if(w6.isDisplayed()) {
+			d.findElement(By.xpath("//div[@class='ripple-container popup-close right']")).click();
+		}
+		d.findElement(By.id("header-studio-explore")).click();
+		WebElement searchBox = d.findElement(By.xpath("//input[@placeholder='Search In Studio' and @enterkeyhint='search']"));
+		js=(JavascriptExecutor)d;
+		js.executeScript("arguments[0].scrollIntoView(true);", searchBox);
+		searchBox.sendKeys(data);
+		Thread.sleep(2000);
+		List<WebElement> ls=d.findElements(By.className("//div[@class='css-1dbjc4n r-1awozwy r-18u37iz']"));
+		for(WebElement we:ls) {
+			Assert.assertTrue(we.isDisplayed());
+		}
+		}
 	
 	@AfterMethod
 	public void closeApp() {
-		d.quit();
+		//d.quit();
 	}
 }
 
