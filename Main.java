@@ -103,7 +103,19 @@ JavascriptExecutor js;
 			Assert.assertTrue(we.isDisplayed());
 		}
 		}
-	
+	@Test(priority=5,groups= {"ui"})
+	public void careers() throws InterruptedException {
+		WebElement w7=d.findElement(By.linkText("Careers"));
+		a.scrollToElement(w7).click(w7).perform();
+		WebElement w8=d.findElement(By.xpath("//h3[text()='Highly Inspiring, State-of-the-art Workspace']"));
+		js=(JavascriptExecutor)d;
+		js.executeScript("arguments[0].scrollIntoView()", w8);
+		Thread.sleep(2000);
+		d.findElement(By.xpath("//a[@class='explore-btn show-link']")).click();
+		Thread.sleep(15000);
+		System.out.println(d.getCurrentUrl());
+		Assert.assertEquals("https://jobs.myntra.com/home",d.getCurrentUrl() );
+	}
 	@AfterMethod
 	public void closeApp() {
 		//d.quit();
