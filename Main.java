@@ -148,9 +148,21 @@ public static void screenshot(String s) {
 			Thread.sleep(3000);
 			screenshot("s1");
 		   d.findElement(By.xpath("//div[text()='ADD TO BAG']")).click();
-				
+		   d.findElement(By.xpath("//span[text()='Bag']")).click();
+		   screenshot("1");
+		   d.findElement(By.xpath("//span[text()='1']")).click();
+		   d.findElement(By.id("10")).click();
+			d.findElement(By.xpath("//div[text()='DONE']")).click();	
+			d.findElement(By.xpath("//div[text()='ENTER PIN CODE']")).click();
+			d.findElement(By.id("pincode")).sendKeys("560064");
+			d.findElement(By.xpath("//div[text()='CHECK']")).click();
+			d.findElement(By.xpath("//div[text()='Donate and make a difference']")).click();
 			
-		}
+			d.findElement(By.xpath("//div[text()='APPLY']")).click();
+			Thread.sleep(3000);
+			d.findElement(By.xpath("//div[text()='APPLY']")).click();
+		
+	}
 	
 	@AfterMethod
 	public void closeApp() {
