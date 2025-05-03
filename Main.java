@@ -1,12 +1,18 @@
 package js;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -21,11 +27,18 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class Main{
-WebDriver d;
+static WebDriver d;
 ChromeOptions c;
 Actions a;
 WebDriverWait wa;
 JavascriptExecutor js;
+public static void screenshot(String s) {
+	File f1 = new File("D:\\Certs\\"+s+".png");
+	TakesScreenshot ts=(TakesScreenshot)d;
+	File f2=ts.getScreenshotAs(OutputType.FILE);
+	f2.renameTo(f1);
+
+}
 	@BeforeMethod
 	public void launchApp() {
 		c=new ChromeOptions();
@@ -58,6 +71,7 @@ JavascriptExecutor js;
 		String s2=d.findElement(By.xpath("//h1[@class='pdp-name']")).getText();
 		String s3=d.findElement(By.xpath("//span[@class='pdp-price']")).getText();
 		System.out.println("Selected product is "+s1+" "+s2+" and priced "+s3);
+		screenshot("s5");
 		}
 	@DataProvider(name="loginData")
 	public Object[] data() {
@@ -73,7 +87,7 @@ JavascriptExecutor js;
 		d.findElement(By.xpath("//div[text()='CONTINUE']")).click();
 		String w3=d.findElement(By.xpath("//div[@class='errorContainer']")).getText();
 		Assert.assertEquals("Please enter a valid mobile number (10 digits)",w3);
-		
+		screenshot("s8");
 		
 		
 	}
@@ -102,6 +116,7 @@ JavascriptExecutor js;
 		for(WebElement we:ls) {
 			Assert.assertTrue(we.isDisplayed());
 		}
+		screenshot("s0");
 		}
 	@Test(priority=5,groups= {"ui"})
 	public void careers() throws InterruptedException {
@@ -115,7 +130,28 @@ JavascriptExecutor js;
 		Thread.sleep(15000);
 		System.out.println(d.getCurrentUrl());
 		Assert.assertEquals("https://jobs.myntra.com/home",d.getCurrentUrl() );
+		screenshot("s8");
 	}
+	@Test(priority=6,groups= {"ui"})
+	public void maxAddToCart() throws InterruptedException, IOException {
+		d.findElement(By.cssSelector("input.desktop-searchBar[placeholder='Search for products, brands and more']")).sendKeys("toys");
+		a.keyDown(Keys.ENTER).keyUp(Keys.ENTER).perform();
+		
+		for(int i=1;i<5;i++) {
+		d.findElement(By.xpath("//ul[@class='gender-list']/li["+i+"]")).click();
+		
+		}
+		d.findElement(By.xpath("//h4[text()='Pull Back Sports Racer Car Toy']")).click();
+		List<String> whs=new ArrayList( d.getWindowHandles());
+		String s5=whs.get(1);
+			d.switchTo().window(s5);
+			Thread.sleep(3000);
+			screenshot("s1");
+		   d.findElement(By.xpath("//div[text()='ADD TO BAG']")).click();
+				
+			
+		}
+	
 	@AfterMethod
 	public void closeApp() {
 		//d.quit();
