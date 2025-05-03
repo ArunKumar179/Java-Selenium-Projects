@@ -166,7 +166,7 @@ public static void screenshot(String s) {
 	
 	@AfterMethod
 	public void closeApp() {
-		//d.quit();
+		d.quit();
 	}
 }
 
